@@ -48,46 +48,6 @@ def generate_board():
 
     return board
 
-# def legal_moves_white(board):
-    
-#     moves = []
-#     for i in range(8):
-#         for j in range(8):
-
-#             #White Pawn
-#             if board[i][j] == 'wP':
-
-#                 #Check if on starting position 
-#                 if i == 6 and board[i-2][j] == '' and board[i-1][j] == '':
-#                     moves.append(f'{board[8][j]}{board[4][8]}')
-
-#                 #1-step forward
-#                 if board[i-1][j] == '':
-#                     moves.append(f'{board[8][j]}{board[i-1][8]}')
-                
-#                 #Take left
-#                 if  board[i-1][j-1].startswith('b'):
-#                     moves.append(f'{board[8][j-1]}{board[i-1][8]}')
-
-#                 #Take right
-#                 if  board[i-1][j+1].startswith('b'):
-#                     moves.append(f'{board[8][j-1]}{board[i-1][8]}')
-                
-#                 #TODO: Promotion
-
-#                 #TODO: En passant
-
-#             #White knight
-#             if board[i][j] == 'wN':
-
-#                 # if board[i+2][j-1] == '' or board[i+2][j-1] == ''
-#                 print("knight here")
-
-
-#     moves = [move.replace(" ", "") for move in moves]
-
-#     return moves
-
 def calc_legal_moves(board, side, opposite):
     
     moves = []
@@ -119,7 +79,7 @@ def calc_legal_moves(board, side, opposite):
 
             #White knight
             if board[i][j] == side+'N':
-
+                
                 # if board[i+2][j-1] == '' or board[i+2][j-1] == ''
                 print("knight here")
 
@@ -140,7 +100,7 @@ def legal_moves_black(board, side='b', opposite='w'):
     board.append(letter_index)
 
     #DEBUG
-    print_nice(board)
+    # print_nice(board)
 
     return calc_legal_moves(board, side, opposite)
 
@@ -175,6 +135,6 @@ if __name__ == "__main__":
     # print(" \______  /___|  /\___  >____  >____  > /_______  /\___  >____  > |__|  |__|   \____// ____|\___  >__|    /______  / \_____  /\_____  /\_____  /")
     # print("        \/     \/     \/     \/     \/          \/     \/     \/                     \/         \/               \/        \/       \/       \/ \n")
  
-    print(legal_moves_black(generate_board()))
+    print(legal_moves_white(generate_board()))
     print("\n")
     print_nice(generate_board())
