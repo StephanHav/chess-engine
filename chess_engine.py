@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 def generate_board():
 
@@ -47,14 +48,54 @@ def generate_board():
 
     return board
 
-def legal_moves_white(board):
+# def legal_moves_white(board):
+    
+#     moves = []
+#     for i in range(8):
+#         for j in range(8):
+
+#             #White Pawn
+#             if board[i][j] == 'wP':
+
+#                 #Check if on starting position 
+#                 if i == 6 and board[i-2][j] == '' and board[i-1][j] == '':
+#                     moves.append(f'{board[8][j]}{board[4][8]}')
+
+#                 #1-step forward
+#                 if board[i-1][j] == '':
+#                     moves.append(f'{board[8][j]}{board[i-1][8]}')
+                
+#                 #Take left
+#                 if  board[i-1][j-1].startswith('b'):
+#                     moves.append(f'{board[8][j-1]}{board[i-1][8]}')
+
+#                 #Take right
+#                 if  board[i-1][j+1].startswith('b'):
+#                     moves.append(f'{board[8][j-1]}{board[i-1][8]}')
+                
+#                 #TODO: Promotion
+
+#                 #TODO: En passant
+
+#             #White knight
+#             if board[i][j] == 'wN':
+
+#                 # if board[i+2][j-1] == '' or board[i+2][j-1] == ''
+#                 print("knight here")
+
+
+#     moves = [move.replace(" ", "") for move in moves]
+
+#     return moves
+
+def calc_legal_moves(board, side, opposite):
     
     moves = []
     for i in range(8):
         for j in range(8):
 
             #White Pawn
-            if board[i][j] == 'wP':
+            if board[i][j] == side+'P':
 
                 #Check if on starting position 
                 if i == 6 and board[i-2][j] == '' and board[i-1][j] == '':
@@ -65,11 +106,11 @@ def legal_moves_white(board):
                     moves.append(f'{board[8][j]}{board[i-1][8]}')
                 
                 #Take left
-                if  board[i-1][j-1].startswith('b'):
+                if  board[i-1][j-1].startswith(opposite):
                     moves.append(f'{board[8][j-1]}{board[i-1][8]}')
 
                 #Take right
-                if  board[i-1][j+1].startswith('b'):
+                if  board[i-1][j+1].startswith(opposite):
                     moves.append(f'{board[8][j-1]}{board[i-1][8]}')
                 
                 #TODO: Promotion
@@ -77,49 +118,31 @@ def legal_moves_white(board):
                 #TODO: En passant
 
             #White knight
-            if board[i][j] == 'wN':
+            if board[i][j] == side+'N':
+
+                # if board[i+2][j-1] == '' or board[i+2][j-1] == ''
                 print("knight here")
 
     moves = [move.replace(" ", "") for move in moves]
 
     return moves
 
-def legal_moves_black(board):
-    
-    moves = []
-    for i in range(8):
-        for j in range(8):
+def legal_moves_white(board, side='w', opposite='b'):
+    return calc_legal_moves(board, side, opposite)
 
-            #White Pawn
-            if board[i][j] == 'bP':
+def legal_moves_black(board, side='b', opposite='w'):
 
-                #Check if on starting position 
-                if i == 1 and board[i+2][j] == '' and board[i+1][j] == '':
-                    moves.append(f'{board[8][j]}{board[5][8]}')
+    #Invert order of rows to get black's perspective 
+    board.reverse()
 
-                #1-step forward
-                if board[i+1][j] == '':
-                    moves.append(f'{board[8][j]}{board[i+1][8]}')
-                
-                #Take left
-                if  board[i+1][j+1].startswith('w'):
-                    moves.append(f'{board[8][j+1]}{board[i+1][8]}')
+    #Pop letter index and append at end of list
+    letter_index = board.pop(0)
+    board.append(letter_index)
 
-                #Take right
-                if  board[i+1][j-1].startswith('w'):
-                    moves.append(f'{board[8][j-1]}{board[i+1][8]}')
-                
-                #TODO: Promotion
+    #DEBUG
+    print_nice(board)
 
-                #TODO: En passant
-
-            #White knight
-            if board[i][j] == 'bN':
-                print("knight here")
-
-    moves = [move.replace(" ", "") for move in moves]
-
-    return moves
+    return calc_legal_moves(board, side, opposite)
 
 def pick_move():
     move = ''
@@ -131,7 +154,11 @@ def read_opponent_move():
 
 #Take in matrix representing board and print to STDOUT
 def print_nice(board):
-    for row in board:
+
+    #deepcopy here as we don't want to reference the actual board as it messes
+    #up the expected empty fields.
+    board_copy = copy.deepcopy(board)
+    for row in board_copy:
         for i, square in enumerate(row):
             if square == '':
                 row[i] = '  '
@@ -140,13 +167,14 @@ def print_nice(board):
 
 if __name__ == "__main__":
 
-    print("Welcome to \n")
-    print("_________ .__                           ________                   __                                      ._______________  _______  _______   ")
-    print("\_   ___ \|  |__   ____   ______ ______ \______ \   ____   _______/  |________  ____ ___.__. ___________   |   ____/\   _  \ \   _  \ \   _  \  ")
-    print("/    \  \/|  |  \_/ __ \ /  ___//  ___/  |    |  \_/ __ \ /  ___/\   __\_  __ \/  _ \   |  |/ __ \_  __ \  |____  \ /  /_\  \/  /_\  \/  /_\  \ ")
-    print("\     \___|   Y  \  ___/ \___ \ \___ \   |    `   \  ___/ \___ \  |  |  |  | \(  <_> )___  \  ___/|  | \/  /       \   \_/   \  \_/   \  \_/   \ ")
-    print(" \______  /___|  /\___  >____  >____  > /_______  /\___  >____  > |__|  |__|   \____// ____|\___  >__|    /______  / \_____  /\_____  /\_____  /")
-    print("        \/     \/     \/     \/     \/          \/     \/     \/                     \/         \/               \/        \/       \/       \/ \n")
+    # print("Welcome to \n")
+    # print("_________ .__                           ________                   __                                      ._______________  _______  _______   ")
+    # print("\_   ___ \|  |__   ____   ______ ______ \______ \   ____   _______/  |________  ____ ___.__. ___________   |   ____/\   _  \ \   _  \ \   _  \  ")
+    # print("/    \  \/|  |  \_/ __ \ /  ___//  ___/  |    |  \_/ __ \ /  ___/\   __\_  __ \/  _ \   |  |/ __ \_  __ \  |____  \ /  /_\  \/  /_\  \/  /_\  \ ")
+    # print("\     \___|   Y  \  ___/ \___ \ \___ \   |    `   \  ___/ \___ \  |  |  |  | \(  <_> )___  \  ___/|  | \/  /       \   \_/   \  \_/   \  \_/   \ ")
+    # print(" \______  /___|  /\___  >____  >____  > /_______  /\___  >____  > |__|  |__|   \____// ____|\___  >__|    /______  / \_____  /\_____  /\_____  /")
+    # print("        \/     \/     \/     \/     \/          \/     \/     \/                     \/         \/               \/        \/       \/       \/ \n")
  
-    #print(legal_moves_white(generate_board()))
+    print(legal_moves_black(generate_board()))
+    print("\n")
     print_nice(generate_board())
