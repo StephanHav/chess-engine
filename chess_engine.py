@@ -48,41 +48,66 @@ def generate_board():
 
     return board
 
+def knight_move(board, i, j, direction, moves, opposite):
+
+    #Check legality of move
+    if i+direction[0] > -1 and i+direction[0] < 8 and j+direction[1] > -1 and j+direction[1] < 8: 
+
+        if board[i+direction[0]][j+direction[1]] == '' or board[i+direction[0]][j+direction[1]].startswith(opposite):
+            
+            #If square is empty move directly
+            if board[i+direction[0]][j+direction[1]] == '':
+                moves.append(f'N{board[8][j+direction[1]].lower()}{board[i+direction[0]][8]}')
+            
+            #If square is occupied by opposing piece, take
+            else:
+                moves.append(f'Nx{board[8][j+direction[1]].lower()}{board[i+direction[0]][8]}')
+
 def calc_legal_moves(board, side, opposite):
     
     moves = []
     for i in range(8):
         for j in range(8):
 
-            #White Pawn
+            #Pawn
             if board[i][j] == side+'P':
 
                 #Check if on starting position 
                 if i == 6 and board[i-2][j] == '' and board[i-1][j] == '':
-                    moves.append(f'{board[8][j]}{board[4][8]}')
+                    moves.append(f'{board[8][j].lower()}{board[4][8]}')
 
                 #1-step forward
                 if board[i-1][j] == '':
-                    moves.append(f'{board[8][j]}{board[i-1][8]}')
+                    moves.append(f'{board[8][j].lower()}{board[i-1][8]}')
                 
                 #Take left
                 if  board[i-1][j-1].startswith(opposite):
-                    moves.append(f'{board[8][j-1]}{board[i-1][8]}')
+                    moves.append(f'{board[8][j].lower()}x{board[8][j-1].lower()}{board[i-1][8]}')
 
                 #Take right
                 if  board[i-1][j+1].startswith(opposite):
-                    moves.append(f'{board[8][j-1]}{board[i-1][8]}')
+                    moves.append(f'{board[8][j].lower()}x{board[8][j-1].lower()}{board[i-1][8]}')
                 
                 #TODO: Promotion
 
                 #TODO: En passant
 
-            #White knight
+            #Knight
             if board[i][j] == side+'N':
-                
-                # if board[i+2][j-1] == '' or board[i+2][j-1] == ''
-                print("knight here")
 
+                knight_moves = [[-2, -1],
+                                [-2, 1],
+                                [-1, -2],
+                                [-1, 2],
+                                [2, -1],
+                                [2, 1],
+                                [1, -2],
+                                [1, 2]]
+                
+                for direction in knight_moves:
+                    knight_move(board, i, j, direction, moves, opposite)
+
+    #Remove leading spaces from board indexes
     moves = [move.replace(" ", "") for move in moves]
 
     return moves
